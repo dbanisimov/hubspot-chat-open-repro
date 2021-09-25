@@ -46,8 +46,6 @@ const HubspotProvider = ({ children }: { children: React.ReactNode }) => {
     script.type = "text/javascript";
     script.id = "hs-script-loader";
     script.src = `https://js.hs-scripts.com/${hubId}.js`;
-    script.defer = true;
-    script.async = true;
     document.body.appendChild(script);
   }, []);
 
