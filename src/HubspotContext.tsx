@@ -7,8 +7,8 @@ type HubspotContextType = {
 };
 
 const HubspotContext = React.createContext<HubspotContextType>({
-  onPathChanged: () => {},
-  openChat: () => {},
+  onPathChanged: () => { },
+  openChat: () => { },
   chatReady: false,
 });
 
@@ -39,6 +39,7 @@ const HubspotProvider = ({ children }: { children: React.ReactNode }) => {
     window._hsq = window._hsq || [];
     window.hsConversationsOnReady = [
       () => {
+        console.log('hsConversationsOnReady');
         setChatReady(true);
       },
     ];
@@ -50,7 +51,9 @@ const HubspotProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const appendHsqPath = useCallback((path: string) => {
+    console.log('setPath', path);
     window._hsq?.push(["setPath", path]);
+    console.log('trackPageView');
     window._hsq?.push(["trackPageView"]);
   }, []);
 
@@ -72,6 +75,8 @@ const HubspotProvider = ({ children }: { children: React.ReactNode }) => {
             console.log('chatWidget.load')
             chatWidget.load();
           }
+        } else {
+          console.log(`Widget is not initialized`);
         }
       },
       openChat: () => {
@@ -81,9 +86,15 @@ const HubspotProvider = ({ children }: { children: React.ReactNode }) => {
           console.log('chatWidget.open')
           chatWidget.open();
         } else {
-          console.error(
-            `Failed to open Hubspot Chat: widget is not initialized on this page`
-          );
+          if (!chatWidget) {
+            console.error(
+              `Failed to open Hubspot Chat: widget is not initialized`
+            );
+          } else {
+            console.error(
+              `Failed to open Hubspot Chat: widget is not loaded on this page`
+            );
+          }
         }
       },
       chatReady,
